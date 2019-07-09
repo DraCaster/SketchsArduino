@@ -1,10 +1,12 @@
 #include <LiquidCrystal_I2C.h>
 #include <IRremote.h>
+#include <Servo.h>
 #include <Wire.h>
 
 int RECV_PIN = 3;
 IRrecv irrecv(RECV_PIN);
 decode_results results;
+Servo servoMotor; //Para controlar el servo
 
 LiquidCrystal_I2C lcd(0x27,16,2);
 
@@ -34,6 +36,8 @@ void setup() {
   lcd.createChar(0,cara);
   lcd.createChar(1,corazon);
   irrecv.enableIRIn(); //Inicio de recepcion por IR
+  servoMotor.attach(11); //Servo conectado al pin 11
+  servoMotor.write(0); //Inicio al angulo 0 del servo
 }
 
 
@@ -80,14 +84,17 @@ void loop() {
                        break;
       case 0x00FF5AA5: lcd.print("Tecla 9");
                        break;
-      case 0x00FF42BD: lcd.print("Tecla *");  
+      case 0x00FF42BD: lcd.print("Tecla *");
+                       servoMotor.write(10);  
                        break;
-      case 0x00FF4AB5: lcd.print("Tecla 0");  
+      case 0x00FF4AB5: lcd.print("Tecla 0");
+                       servoMotor.write(90);  
                        break;
-      case 0x00FF52AD: lcd.print("Tecla #");   
+      case 0x00FF52AD: lcd.print("Tecla #");
+                       servoMotor.write(180);   
                        break;
       }
       irrecv.resume();
     }
-    delay(1000);
+    delay(900);
 }
